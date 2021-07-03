@@ -53,7 +53,7 @@ function Pokedex(props) {
       body: JSON.stringify( {username: props.username, password: props.password} )
     }
 
-    fetch("http://localhost:8000/api/pokemon/" + pokemonName + "/favorite", requestOptions)
+    fetch("https://pokedex-backend02.herokuapp.com/api/pokemon/" + pokemonName + "/favorite", requestOptions)
     .then(response => response.json())
     .then(function(data) {
       
@@ -70,7 +70,7 @@ function Pokedex(props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( {username: props.username, password: props.password} )
       }
-      fetch("http://localhost:8000/api/favoritepokemon/", requestOptions)
+      fetch("https://pokedex-backend02.herokuapp.com/api/favoritepokemon/", requestOptions)
       .then(response => response.json())
       .then(function(fpData) {
         for (const pokemon of fpData) {

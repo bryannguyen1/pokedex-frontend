@@ -29,7 +29,7 @@ function Login() {
         }
 
 
-        fetch("http://localhost:8000/api/register/", requestOptions)
+        fetch("https://pokedex-backend02.herokuapp.com/api/register/", requestOptions)
         .then(response => response.json())
         .then(function(data) {
 
@@ -45,7 +45,7 @@ function Login() {
             body: JSON.stringify( {username: username, password: password} )
         }
 
-        fetch("http://localhost:8000/api/login/", requestOptions)
+        fetch("https://pokedex-backend02.herokuapp.com/api/login/", requestOptions)
         .then(response => response.json())
         .then(function(data){
             if (data.token !== undefined) {

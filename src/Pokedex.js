@@ -53,7 +53,7 @@ function Pokedex(props) {
       body: JSON.stringify( {username: props.username, password: props.password} )
     }
 
-    fetch("https://pokedex-backend02.herokuapp.com/api/pokemon/" + pokemonName + "/favorite", requestOptions)
+    fetch("https://pokedex-backend02.herokuapp.com/api/pokemon/" + pokemonName + "/favorite/", requestOptions)
     .then(response => response.json())
     .then(function(data) {
       

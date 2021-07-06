@@ -60,8 +60,6 @@ function Pokedex(props) {
     })
   }
 
-
-
   useEffect(() => {
     if (showFavorites) {
       setPokemons([])
@@ -135,9 +133,25 @@ function Pokedex(props) {
     setQuery(e.target.value)
     setPageNumber(1)
   }
+
+  function onClickLogout() {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Authorization': 'Token ' + props.token },
+      body: {}
+    }
+    console.log(requestOptions.headers)
+    fetch("https://pokedex-backend02.herokuapp.com/api/logout/", requestOptions)
+    .then(function(response) {
+      if (response.statusText === "No Content") {
+        window.location.reload()
+      }
+    })
+  }
     
   return (
     <div className="pokedex">
+      <button onClick={onClickLogout}>Logout</button>
       <button onClick={() => setShowFavorites(!showFavorites)}>Filter by Favorites</button>
       <div id="search-bar-div">
         <input type="text" value={query} onChange={handleSearch}></input>

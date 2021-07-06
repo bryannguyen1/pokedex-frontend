@@ -11,12 +11,23 @@ function Login() {
         password: ''
     })
 
+    const [loginData, setLoginData] = useState({
+        username: '',
+        password: ''
+    })
+
     const [hasToken, setHasToken] = useState(false)
+    const [token, setToken] = useState('')
 
     const { username, email, password } = formData
+    const { loginUsername, loginPassword } = loginData
 
     function onChangeFormData(e) {
         setFormData({...formData, [e.target.name]: e.target.value})
+    }
+
+    function onChangeLoginData(e) {
+        setLoginData({...loginData, [e.target.name]: e.target.value})
     }
 
     function onSubmitRegister(e) {
@@ -42,7 +53,7 @@ function Login() {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify( {username: username, password: password} )
+            body: JSON.stringify( loginData )
         }
 
         fetch("https://pokedex-backend02.herokuapp.com/api/login/", requestOptions)
@@ -50,6 +61,7 @@ function Login() {
         .then(function(data){
             if (data.token !== undefined) {
                 setHasToken(true)
+                setToken(data.token)
             }
         })
     }
@@ -67,13 +79,13 @@ function Login() {
                     </form>
                     <h1>Login</h1>
                     <form onSubmit={onSubmitLogin} className="auth-form">
-                        <input placeholder={'Username'} name='username' value={username} onChange={onChangeFormData} />
-                        <input placeholder={'Password'} name='password' value={password} onChange={onChangeFormData} />
+                        <input placeholder={'Username'} name='username' value={loginUsername} onChange={onChangeLoginData} />
+                        <input placeholder={'Password'} name='password' value={loginPassword} onChange={onChangeLoginData} />
                         <button type="submit">Login</button>
                     </form>
                 </div>
             }
-            {hasToken && <Pokedex username={username} password={password}/>}
+            {hasToken && <Pokedex username={username} password={password} token={token} loggedIn={true}/>}
         </div>
     )
 }

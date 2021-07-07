@@ -11,7 +11,7 @@ function PokemonInfo(props) {
   return (
     <div>
       <button onClick={open}>Show data</button>
-      <Dialog isOpen={showDialog} onDismiss={close} className="pokemon-pop-up">
+      <Dialog isOpen={showDialog} onDismiss={close} className="pokemon-pop-up" aria-labelledby="pokemonInfoTitle">
         <p className="pokemon-name">{props.pokemon.name}</p>
         <div className="pokemon-sprite">
           <img src={props.pokemon.sprite} alt={props.pokemon.name}/>
@@ -34,6 +34,7 @@ function Pokedex(props) {
   const [query, setQuery] = useState('')
   const [pageNumber, setPageNumber] = useState(1)
   const [showFavorites, setShowFavorites] = useState(false)
+  const [favCounter, setFavCounter] = useState(0)
 
   const observer = useRef()
   const lastEntryRef = useCallback(node => {
@@ -52,7 +53,6 @@ function Pokedex(props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify( {username: props.username, password: props.password} )
     }
-
     fetch("https://pokedex-backend02.herokuapp.com/api/pokemon/" + pokemonName + "/favorite/", requestOptions)
     .then(response => response.json())
     .then(function(data) {
@@ -81,6 +81,9 @@ function Pokedex(props) {
         }
       })
       return
+    }
+    if (favCounter !== 0 && favCounter % 2 === 0) {
+      setPokemons([])
     }
     let offset = (pageNumber - 1) * 20;
     fetch("https://pokeapi.co/api/v2/pokemon?limit=20&offset=" + offset.toString())
@@ -140,7 +143,6 @@ function Pokedex(props) {
       headers: { 'Authorization': 'Token ' + props.token },
       body: {}
     }
-    console.log(requestOptions.headers)
     fetch("https://pokedex-backend02.herokuapp.com/api/logout/", requestOptions)
     .then(function(response) {
       if (response.statusText === "No Content") {
@@ -148,11 +150,16 @@ function Pokedex(props) {
       }
     })
   }
+
+  function onClickFilter() {
+    setShowFavorites(!showFavorites)
+    setFavCounter(favCounter => favCounter + 1)
+  }
     
   return (
     <div className="pokedex">
       <button onClick={onClickLogout}>Logout</button>
-      <button onClick={() => setShowFavorites(!showFavorites)}>Filter by Favorites</button>
+      <button onClick={onClickFilter}>Filter by Favorites</button>
       <div id="search-bar-div">
         <input type="text" value={query} onChange={handleSearch}></input>
       </div>
@@ -167,7 +174,7 @@ function Pokedex(props) {
                   <div className="pokemon-sprite">
                     <img src={pokemon.sprite} alt={pokemon.name}/>
                   </div>
-                  <button onClick={() => onClickFavorite(pokemon.name)}>Favorite</button>      
+                  <button onClick={() => onClickFavorite(pokemon.name)} >Favorite</button>      
                   <PokemonInfo pokemon={pokemon}/>
                 </div>
               )
@@ -178,7 +185,7 @@ function Pokedex(props) {
                   <div className="pokemon-sprite">
                     <img src={pokemon.sprite} alt={pokemon.name}/>
                   </div>
-                  <button onClick={() => onClickFavorite(pokemon.name)}>Favorite</button>
+                  <button onClick={() => onClickFavorite(pokemon.name)} >Favorite</button>
                   <PokemonInfo pokemon={pokemon}/>
                 </div>
               )

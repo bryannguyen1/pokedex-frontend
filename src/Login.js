@@ -85,7 +85,7 @@ function Login() {
                     </form>
                 </div>
             }
-            {hasToken && <Pokedex username={username} password={password} token={token} loggedIn={true}/>}
+            {hasToken && <Pokedex username={loginData.username} password={loginData.password} token={token} loggedIn={true}/>}
         </div>
     )
 }

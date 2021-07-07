@@ -61,6 +61,13 @@ function Pokedex(props) {
   }
 
   useEffect(() => {
+    if (favCounter !== 0 && favCounter % 2 === 0) {
+      setPokemons([])
+      setPageNumber(1)
+    }
+  }, [favCounter])
+
+  useEffect(() => {
     if (showFavorites) {
       setPokemons([])
       const requestOptions = {
@@ -81,9 +88,6 @@ function Pokedex(props) {
         }
       })
       return
-    }
-    if (favCounter !== 0 && favCounter % 2 === 0) {
-      setPokemons([])
     }
     let offset = (pageNumber - 1) * 20;
     fetch("https://pokeapi.co/api/v2/pokemon?limit=20&offset=" + offset.toString())

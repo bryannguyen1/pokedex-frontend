@@ -35,6 +35,8 @@ function Pokedex(props) {
   const [pageNumber, setPageNumber] = useState(1)
   const [showFavorites, setShowFavorites] = useState(false)
   const [favCounter, setFavCounter] = useState(0)
+  const [pokemonFavorites, setPokemonFavorites] = useState({})
+  const [pressFavorite, setPressFavorite] = useState(0)
 
   const observer = useRef()
   const lastEntryRef = useCallback(node => {
@@ -56,9 +58,24 @@ function Pokedex(props) {
     fetch("https://pokedex-backend02.herokuapp.com/api/pokemon/" + pokemonName + "/favorite/", requestOptions)
     .then(response => response.json())
     .then(function(data) {
-      
+      setPokemonFavorites(pokemonFavorites => ({...pokemonFavorites, [pokemonName]: data.favorite}))
     })
   }
+
+  useEffect(() => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify( {username: props.username, password: props.password} )
+    }
+    fetch("https://pokedex-backend02.herokuapp.com/api/favoritepokemon/", requestOptions)
+    .then(response => response.json())
+    .then(function(fpData) {
+      for (const pokemon of fpData) {
+        setPokemonFavorites(pokemonFavorites => ({...pokemonFavorites, [pokemon.name]: pokemon.favorite}))
+      }
+    })
+  }, [])
 
   useEffect(() => {
     if (favCounter !== 0 && favCounter % 2 === 0) {
@@ -159,6 +176,14 @@ function Pokedex(props) {
     setShowFavorites(!showFavorites)
     setFavCounter(favCounter => favCounter + 1)
   }
+
+  function favoriteStyle(pokemonName) {
+    if (pokemonFavorites[pokemonName]) {
+      return {color: "red"}
+    } else {
+      return {color: "black"}
+    }
+  }
     
   return (
     <div className="pokedex">
@@ -178,7 +203,7 @@ function Pokedex(props) {
                   <div className="pokemon-sprite">
                     <img src={pokemon.sprite} alt={pokemon.name}/>
                   </div>
-                  <button onClick={() => onClickFavorite(pokemon.name)} >Favorite</button>      
+                  <button onClick={() => onClickFavorite(pokemon.name)} style={favoriteStyle(pokemon.name)} >Favorite</button>      
                   <PokemonInfo pokemon={pokemon}/>
                 </div>
               )
@@ -189,7 +214,7 @@ function Pokedex(props) {
                   <div className="pokemon-sprite">
                     <img src={pokemon.sprite} alt={pokemon.name}/>
                   </div>
-                  <button onClick={() => onClickFavorite(pokemon.name)} >Favorite</button>
+                  <button onClick={() => onClickFavorite(pokemon.name)} style={favoriteStyle(pokemon.name)}>Favorite</button>
                   <PokemonInfo pokemon={pokemon}/>
                 </div>
               )
